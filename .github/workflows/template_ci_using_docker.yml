@@ -25,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: tinybirdco/tinybird-cli-docker:latest
+      volumes:
+        - tinybird:/
 
 
     defaults:
