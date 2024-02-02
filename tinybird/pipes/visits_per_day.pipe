@@ -1,7 +1,0 @@
-TOKEN "visits_per_day_endpoint_read_3782" READ
-
-NODE visits_per_day_0
-SQL >
-    SELECT toDate(timestamp) as date, count() as visits
-    FROM analytics_events
-    GROUP BY date
