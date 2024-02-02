@@ -1,0 +1,15 @@
+DESCRIPTION >
+    Materialized view using for normalizing the data from analytics_events into normalized_events
+
+SCHEMA >
+    WITH JSONExtractRaw(root, 'payload') as payload
+    SELECT 
+        timestamp, 
+        JSONExtractString(root, 'session_id') session_id,
+        JSONExtractString(root, 'action') action,
+        JSONExtractString(root, 'version') version,
+        JSONExtractString(root, 'href') href,
+    FROM analytics_events
+
+TYPE MATERIALIZED
+DATSASOURCE normalized_events

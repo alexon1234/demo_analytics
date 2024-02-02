@@ -1,0 +1,15 @@
+DESCRIPTION >
+    Events normalized from the raw events to be used for the endpoints
+
+
+SCHEMA >
+    `timestamp` DateTime,
+    `session_id` String,
+    `action` LowCardinality(String),
+    `version` LowCardinality(String),
+    `href` String
+
+ENGINE MergeTree
+ENGINE_PARTITION_KEY toYYYYMM(timestamp)
+ENGINE_SORTING_KEY timestamp
+ENGINE_TTL timestamp + toIntervalDay(60)
