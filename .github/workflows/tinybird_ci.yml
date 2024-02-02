@@ -70,18 +70,18 @@ jobs:
         run: tb check  
 
       - name: Check auth
-        run: tb --host ${{ secrets.tb_host }} --token ${{ secrets.tb_admin_token }} auth info
+        run: tb --host ${{ env.tb_host }} --token ${{ env.tb_admin_token }} auth info
 
       - name: Try delete previous Branch
         run: |
-          output=$(tb --host ${{ secrets.tb_host }} --token ${{ secrets.tb_admin_token }} branch ls)
+          output=$(tb --host ${{ env.tb_host }} --token ${{ env.tb_admin_token }} branch ls)
           BRANCH_NAME="tmp_ci_${_NORMALIZED_BRANCH_NAME}_${{ github.event.pull_request.number }}"
 
           # Check if the branch name exists in the output
           if echo "$output" | grep -q "\b$BRANCH_NAME\b"; then
               tb \
-                --host ${{ secrets.tb_host }} \
-                --token ${{ secrets.tb_admin_token }} \
+                --host ${{ env.tb_host }} \
+                --token ${{ env.tb_admin_token }} \
                 branch rm $BRANCH_NAME \
                 --yes
           else
@@ -91,8 +91,8 @@ jobs:
       - name: Create new test Branch with data
         run: |
           tb \
-          --host ${{ secrets.tb_host }} \
-          --token ${{ secrets.tb_admin_token }} \
+          --host ${{ env.tb_host }} \
+          --token ${{ env.tb_admin_token }} \
           branch create tmp_ci_${_NORMALIZED_BRANCH_NAME}_${{ github.event.pull_request.number }} \
           ${_ENV_FLAGS}
 
@@ -144,7 +144,7 @@ jobs:
 
       - name: Validate input
         run: |
-          [[ "${{ secrets.tb_admin_token }}" ]] || { echo "Go to the tokens section in your Workspace, copy the 'admin token (user@domain.com)' associated to a user account and set TB_ADMIN_TOKEN as a Secret in your Git repository"; exit 1; }
+          [[ "${{ env.tb_admin_token }}" ]] || { echo "Go to the tokens section in your Workspace, copy the 'admin token (user@domain.com)' associated to a user account and set TB_ADMIN_TOKEN as a Secret in your Git repository"; exit 1; }
       - name: Set environment variables
         run: |
           _ENV_FLAGS="${ENV_FLAGS:=--last-partition --wait}"
@@ -166,12 +166,12 @@ jobs:
         run: tb --version
 
       - name: Check auth
-        run: tb --host ${{ secrets.tb_host }} --token ${{ secrets.tb_admin_token }} auth info
+        run: tb --host ${{ env.tb_host }} --token ${{ env.tb_admin_token }} auth info
 
       - name: Use Branch
         run: |
           BRANCH_NAME="tmp_ci_${_NORMALIZED_BRANCH_NAME}_${{ github.event.pull_request.number }}"
-          tb --host ${{ secrets.tb_host }} --token ${{ secrets.tb_admin_token }} branch use $BRANCH_NAME
+          tb --host ${{ env.tb_host }} --token ${{ env.tb_admin_token }} branch use $BRANCH_NAME
 
       - name: Get env token
         run: |
@@ -197,7 +197,7 @@ jobs:
         id: regression_labels
         uses: alrocar/get-labels-action@v1.0.1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secret.GITHUB_TOKEN }}
           label_key: regression
   
       - name: Run pipe regression tests
@@ -251,7 +251,7 @@ jobs:
 
       - name: Validate input
         run: |
-          [[ "${{ secrets.tb_admin_token }}" ]] || { echo "Go to the tokens section in your Workspace, copy the 'admin token' and set TB_ADMIN_TOKEN as a Secret in your Git repository"; exit 1; }
+          [[ "${{ env.tb_admin_token }}" ]] || { echo "Go to the tokens section in your Workspace, copy the 'admin token' and set TB_ADMIN_TOKEN as a Secret in your Git repository"; exit 1; }
 
       - name: Install Tinybird CLI
         run: |
@@ -266,14 +266,14 @@ jobs:
 
       - name: Try delete previous Branch
         run: |
-          output=$(tb --host ${{ secrets.tb_host }} --token ${{ secrets.tb_admin_token }} branch ls)
+          output=$(tb --host ${{ env.tb_host }} --token ${{ env.tb_admin_token }} branch ls)
           BRANCH_NAME="tmp_ci_${_NORMALIZED_BRANCH_NAME}_${{ github.event.pull_request.number }}"
 
           # Check if the branch name exists in the output
           if echo "$output" | grep -q "\b$BRANCH_NAME\b"; then
               tb \
-                --host ${{ secrets.tb_host }} \
-                --token ${{ secrets.tb_admin_token }} \
+                --host ${{ env.tb_host }} \
+                --token ${{ env.tb_admin_token }} \
                 branch rm $BRANCH_NAME \
                 --yes
           else
