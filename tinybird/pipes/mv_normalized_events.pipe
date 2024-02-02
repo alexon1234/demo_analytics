@@ -1,9 +1,10 @@
 DESCRIPTION >
     Materialized view using for normalizing the data from analytics_events into normalized_events
 
+NODE normalizing_data
 SQL >
     WITH 
-    JSONExtractString(root, 'payload') as payload
+        JSONExtractString(root, 'payload') as payload
     SELECT
         timestamp,
         JSONExtractString(root, 'session_id') session_id,
