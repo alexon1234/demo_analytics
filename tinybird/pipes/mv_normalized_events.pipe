@@ -14,4 +14,4 @@ SQL >
     FROM analytics_events
 
 TYPE MATERIALIZED
-DATSASOURCE normalized_events
+DATASOURCE normalized_events
