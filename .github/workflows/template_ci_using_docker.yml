@@ -45,7 +45,7 @@ jobs:
     name: Deploy to CI Branch
     runs-on: ubuntu-latest
     container:
-      image: tinybirdco/tinybird-cli-docker:latest
+      image: tinybirdco/tinybird-cli-docker:2.2.0
     defaults:
       run:
         working-directory: ${{ inputs.data_project_dir }}
