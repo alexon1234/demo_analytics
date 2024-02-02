@@ -20,7 +20,7 @@ concurrency: ${{ github.workflow }}-${{ github.event.pull_request.number }}
 
 jobs:
     ci: # ci using branches from workspace 'analytics_events'
-      uses: './template_ci_using_docker.yml'
+      uses: ./.github/workflows/template_ci_using_docker.yml
       with:
         data_project_dir: tinybird
       secrets:
