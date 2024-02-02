@@ -8,6 +8,7 @@ DESCRIPTION >
     Parse raw page_hit events
 
 SQL >
+    WITH JSONExtractRaw(value, 'payload') as payload
     SELECT
         timestamp,
         action,
