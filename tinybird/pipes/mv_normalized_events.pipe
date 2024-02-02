@@ -1,7 +1,7 @@
 DESCRIPTION >
     Materialized view using for normalizing the data from analytics_events into normalized_events
 
-SCHEMA >
+SQL >
     WITH 
     JSONExtractString(root, 'payload') as payload
     SELECT
@@ -11,5 +11,6 @@ SCHEMA >
         JSONExtractString(root, 'version') version,
         JSONExtractString(payload, 'href') href
     FROM analytics_events
+
 TYPE MATERIALIZED
 DATSASOURCE normalized_events
