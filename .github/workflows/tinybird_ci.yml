@@ -47,11 +47,6 @@ jobs:
         with:
           fetch-depth: 300
           ref: ${{ github.event.pull_request.head.sha }}
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          architecture: "x64"
-          cache: 'pip'
 
       - name: Validate input
         run: |
@@ -67,15 +62,6 @@ jobs:
           echo "_NORMALIZED_BRANCH_NAME=$_NORMALIZED_BRANCH_NAME" >> $GITHUB_ENV
           grep -v '^#' .tinyenv >> $GITHUB_ENV
           echo >> $GITHUB_ENV # Ensures new line at the end of the file
-
-
-      - name: Install Tinybird CLI
-        run: |
-          if [ -f "requirements.txt" ]; then
-            pip install -r requirements.txt
-          else
-            pip install tinybird-cli
-          fi
 
       - name: Tinybird version
         run: tb --version
