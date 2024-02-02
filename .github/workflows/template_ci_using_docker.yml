@@ -19,6 +19,13 @@ jobs:
   deploy:
     name: Deploy to CI Branch
     runs-on: ubuntu-latest
+    container:
+      image: tinybirdco/tinybird-cli-docker:latest
+      env:
+        TB_TOKEN: ${{ secrets.tb_admin_token }}
+        TB_HOST: ${{ secrets.tb_host }}
+
+
     defaults:
       run:
         working-directory: ${{ inputs.data_project_dir }}
@@ -32,7 +39,7 @@ jobs:
       
       - name: Validate input
         run: |
-          [[ "${{ secrets.tb_admin_token }}" ]] || { echo "Go to the tokens section in your Workspace, copy the 'admin token' and set TB_ADMIN_TOKEN as a Secret in your Git repository"; exit 1; }
+          [[ "${{ env.TB_TOKEN }}" ]] || { echo "Go to the tokens section in your Workspace, copy the 'admin token' and set TB_ADMIN_TOKEN as a Secret in your Git repository"; exit 1; }
 
       - name: Set environment variables
         run: |
@@ -52,18 +59,18 @@ jobs:
         run: tb check  
 
       - name: Check auth
-        run: tb --host ${{ secrets.tb_host }} --token ${{ secrets.tb_admin_token }} auth info
+        run: tb --host ${{ env.TB_HOST }} --token ${{ env.TB_TOKEN }} auth info
 
       - name: Try delete previous Branch
         run: |
-          output=$(tb --host ${{ secrets.tb_host }} --token ${{ secrets.tb_admin_token }} branch ls)
+          output=$(tb --host ${{ env.TB_HOST }} --token ${{ env.TB_TOKEN }} branch ls)
           BRANCH_NAME="tmp_ci_${_NORMALIZED_BRANCH_NAME}_${{ github.event.pull_request.number }}"
 
           # Check if the branch name exists in the output
           if echo "$output" | grep -q "\b$BRANCH_NAME\b"; then
               tb \
-                --host ${{ secrets.tb_host }} \
-                --token ${{ secrets.tb_admin_token }} \
+                --host ${{ env.TB_HOST }} \
+                --token ${{ env.TB_TOKEN }} \
                 branch rm $BRANCH_NAME \
                 --yes
           else
@@ -73,8 +80,8 @@ jobs:
       - name: Create new test Branch with data
         run: |
           tb \
-          --host ${{ secrets.tb_host }} \
-          --token ${{ secrets.tb_admin_token }} \
+          --host ${{ env.TB_HOST }} \
+          --token ${{ env.TB_TOKEN }} \
           branch create tmp_ci_${_NORMALIZED_BRANCH_NAME}_${{ github.event.pull_request.number }} \
           ${_ENV_FLAGS}
 
