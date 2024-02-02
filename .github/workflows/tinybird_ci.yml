@@ -15,6 +15,7 @@ on:
     types: [opened, reopened, labeled, unlabeled, synchronize, closed]
     paths:
       - 'tinybird/**'
+      - '.github/workflows/tinybird_ci.yml'
 
 concurrency: ${{ github.workflow }}-${{ github.event.pull_request.number }}
 
