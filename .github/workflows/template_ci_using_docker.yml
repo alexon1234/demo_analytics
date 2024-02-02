@@ -113,6 +113,8 @@ jobs:
 
   test:
     name: Run tests
+    needs:
+      - deploy
     runs-on: ubuntu-latest
     container:
       image: tinybirdco/tinybird-cli-docker:latest
