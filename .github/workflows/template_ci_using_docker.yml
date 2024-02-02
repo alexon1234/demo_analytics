@@ -59,6 +59,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           
       - run: apt update && apt upgrade -y && apt install -y python3-pip
+      - run: git config --global --add safe.directory  ${{ inputs.data_project_dir }}
 
       - name: Validate input
         run: |
