@@ -25,10 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: tinybirdco/tinybird-cli-docker:latest
-      volumes:
-        - tinybird:/
-
-
     defaults:
       run:
         working-directory: ${{ inputs.data_project_dir }}
@@ -39,6 +35,9 @@ jobs:
         with:
           fetch-depth: 300
           ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Debug 
+        run: ls -la  
       
       # - name: Validate input
       #   run: |
