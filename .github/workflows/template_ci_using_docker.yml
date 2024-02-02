@@ -19,6 +19,27 @@ env:
   TB_TOKEN: ${{ secrets.tb_admin_token }}
   TB_HOST: ${{ secrets.tb_host }}
 
+
+#     steps:
+#     - uses: actions/checkout@v3
+#       with:
+#         fetch-depth: 0
+#     - run: pwd && ls -ltrha
+#     - run: apt update && apt upgrade -y
+#     # This is a hack because git diff isn't just for git -_-
+#     - run: git config --global --add safe.directory /work
+#     - run: pip install tinybird-cli==3.0.0.dev13
+#     - run: cd integrations/tinybird && tb pull --auto
+#     - run: cd integrations/tinybird && tb fmt --yes ./**/*.{datasource,pipe}
+#     - if: github.event_name == 'pull_request' && github.ref_name != 'merge'
+#       run: tb branch create ci_pull_request_$(echo ${{ github.ref_name }} | rev | cut -d "/" -f 1 | rev | tr '.-' '_') || echo 'Branch already created'
+#     # allow deploying to branches
+#     # - if: github.event_name == 'push'
+#     #   run: tb branch create ci_branch_$(echo ${{ github.ref_name }} | rev | cut -d "/" -f 1 | rev | tr '.-' '_') || echo 'Branch already created'
+#     - run: cd integrations/tinybird && tb branch use ci_pull_request_$(echo ${{ github.ref_name }} | rev | cut -d "/" -f 1 | rev | tr '.-' '_')
+#     - run: cd integrations/tinybird && tb push --push-deps --yes
+#     - run: tb test run -c 5 ./**/*.{test} || exit 0
+
 jobs:
   deploy:
     name: Deploy to CI Branch
@@ -36,7 +57,9 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-      
+          
+      - run: apt update && apt upgrade -y && apt install -y python3-pip
+
       - name: Validate input
         run: |
           [[ "${{ env.TB_TOKEN }}" ]] || { echo "Go to the tokens section in your Workspace, copy the 'admin token' and set TB_ADMIN_TOKEN as a Secret in your Git repository"; exit 1; }
@@ -128,8 +151,6 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
-
-      - run: apt update && apt upgrade -y && apt install -y python3-pip
 
       - name: Validate input
         run: |
